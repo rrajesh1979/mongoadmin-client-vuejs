@@ -1,19 +1,23 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <add-request/>
+    <request-list/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import RequestList from "./components/RequestList.vue";
+import AddRequest from "./components/AddRequest.vue";
 
 export default {
-  name: 'App',
+  name: "app",
   components: {
-    HelloWorld
+    RequestList,
+    AddRequest
   }
-}
+};
 </script>
 
 <style>
