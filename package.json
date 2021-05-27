@@ -12,11 +12,14 @@
     "apollo-client": "^2.6.10",
     "apollo-link": "^1.2.14",
     "apollo-link-http": "^1.5.17",
+    "bootstrap": "^5.0.1",
+    "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.12.4",
     "vue": "^2.6.11",
-    "vue-apollo": "^3.0.7"
+    "vue-apollo": "^3.0.7",
+    "vue-cli-plugin-apollo": "^0.22.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

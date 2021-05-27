@@ -1,12 +1,26 @@
 <template>
   <div>
-    <request-item v-for="userRequest in userRequests" :key="userRequest.id" :userRequest="userRequest">
-      {{userRequest.id}}
-      {{userRequest.requester}}
-      {{userRequest.requestType}}
-      {{userRequest.requestedDate}}
-      {{userRequest.status}}
-    </request-item>
+    <div class="card" style="width: 18rem;">
+      <b-card
+          title="Card Title"
+          img-src="https://picsum.photos/600/300/?image=25"
+          img-alt="Image"
+          img-top
+          tag="article"
+          style="max-width: 20rem;"
+          class="mb-2"
+      >
+        <b-card-text>
+          <request-item v-for="userRequest in listUserRequests" :key="userRequest.id" :userRequest="userRequest">
+            {{userRequest.id}}
+            {{userRequest.requester}}
+            {{userRequest.requestType}}
+            {{userRequest.requestedDate}}
+            {{userRequest.status}}
+          </request-item>
+        </b-card-text>
+      </b-card>
+    </div>
   </div>
 </template>
 
@@ -21,6 +35,11 @@ const GET_REQUESTS = gql`
       requester
       project
       cluster
+      database
+      requestType
+      requestedDate
+      status
+      role
     }
   }
 `;
@@ -32,26 +51,12 @@ export default {
   data() {
     return {
 
-      userRequests: []
-
-      // userRequests: [
-      //   {
-      //     "id": "1000",
-      //     "requester": "Rajesh R",
-      //     "project": "my project",
-      //     "cluster": "cluster 0",
-      //     "database": "reports",
-      //     "requestType": "USER_ACCESS",
-      //     "role": "user",
-      //     "status": "OPEN",
-      //     "requestedDate": "05-May-2021"
-      //   }
-      // ]
+      listUserRequests: []
 
     };
   },
   apollo: {
-    userRequests: {
+    listUserRequests: {
       query: GET_REQUESTS
     }
   }
