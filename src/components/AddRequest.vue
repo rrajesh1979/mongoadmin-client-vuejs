@@ -16,41 +16,26 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
 // import { InMemoryCache } from "apollo-cache-inmemory";
+import gql from "graphql-tag";
 
 const ADD_REQUEST = gql`
-  mutation addRequest(
-    $id: String!
-    $requester: String!
-    $project: String!
-    $cluster: String!
-    $database: String!
-    $requestType: String!
-    $role: String!
-    $status: String!
-    $requestedDate  : String!
-  ) {
-    createUserRequest(
-      objects: [
-        {
-          id: $id
-          requester: $requester
-          project: $project
-          cluster: $cluster
-          database: $database
-          requestType: $requestType
-          role: $role
-          status: $status
-          requestedDate: $requestedDate
-        }
-      ]
+  mutation addRequest($id: ID, $requester: String, $project: String, $cluster: String, $database: String, $requestType: String, $role: String, $status: String, $requestedDate: String) {
+    createUserRequestArgs(id: $id, requester: $requester, project: $project,
+    cluster: $cluster, database: $database, requestType: $requestType, role: $role,
+    status: $status, requestedDate: $requestedDate
     ) {
-      returning {
-        id
-      }
+      id
+      requester
+      project
+      cluster
+      database
+      requestType
+      role
+      status
+      requestedDate
     }
-  }
+    }
 `;
 
 export default {
