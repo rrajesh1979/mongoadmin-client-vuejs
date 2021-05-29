@@ -1,17 +1,52 @@
 <template>
-  <form @submit="submit">
-    <fieldset>
-      <input type="text" placeholder="ID" v-model="id">
-      <input type="text" placeholder="Requester" v-model="requester">
-      <input type="text" placeholder="Project" v-model="project">
-      <input type="text" placeholder="Cluster" v-model="cluster">
-      <input type="text" placeholder="Database" v-model="database">
-      <input type="text" placeholder="Request Type" v-model="requestType">
-      <input type="text" placeholder="Role" v-model="role">
-      <input type="text" placeholder="Status" v-model="status">
-      <input type="text" placeholder="Request Date" v-model="requestedDate">
-    </fieldset>
-    <input class="button-primary" type="submit" value="Send">
+  <form @submit="submit" >
+    <div class="container-fluid">
+      <div>
+        <img alt="Vue logo" src="../assets/mongodb-image.png" height="200" width="320"/>
+        <h5>Create new request</h5>
+      </div>
+      <div class="row g-3" >
+          <fieldset>
+            <input class="form-control" type="text" align="left" aria-label="input example"  placeholder="ID" v-model="id">
+
+            <div class="mb-3">
+              <label for="requester" align="left" class="form-label">Requester</label>
+              <input class="form-control" type="text" placeholder="Requester" id="requester" v-model="requester">
+            </div>
+
+            <div class="mb-3">
+              <label for="project" class="form-label">Project</label>
+              <input class="form-control" type="text" placeholder="Project" id="project" v-model="project">
+            </div>
+
+            <div class="mb-3">
+              <label for="cluster" class="form-label">Cluster</label>
+              <input class="form-control" type="text" placeholder="Cluster" id="cluster" v-model="cluster">
+            </div>
+
+            <div class="mb-3">
+              <label for="database" class="form-label">Database</label>
+              <input class="form-control" type="text" placeholder="Database" id="database" v-model="database">
+            </div>
+
+            <div class="mb-3">
+              <label for="requestType" class="form-label">Request Type</label>
+              <select type="list" placeholder="Request Type" id="requestType" v-model="requestType">
+                <option default value="USER_ACCESS">USER_ACCESS</option>
+                <option value="NETWORK_ACCESS">NETWORK_ACCESS</option>
+                <option value="NEW_CLUSTER">NEW_CLUSTER</option>
+              </select>
+            </div>
+
+            <input type="text" placeholder="Role" v-model="role">
+            <input type="list" placeholder="Status" v-model="status">
+            <input type="date" placeholder="Request Date" v-model="requestedDate">
+          </fieldset>
+          <div>
+            <button class="btn button-primary" type="submit" value="Send">Submit</button>
+          </div>
+      </div>
+    </div>
   </form>
 </template>
 
