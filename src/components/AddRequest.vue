@@ -1,47 +1,50 @@
 <template>
   <form @submit="submit" >
     <div class="container-fluid">
-      <div>
+      <div align="center" >
         <img alt="Vue logo" src="../assets/mongodb-image.png" height="200" width="320"/>
         <h5>Create new request</h5>
       </div>
       <div class="row g-3" >
-          <fieldset>
             <input class="form-control" type="text" align="left" aria-label="input example"  placeholder="ID" v-model="id">
 
-            <div class="mb-3">
+            <div class="col-md-12">
               <label for="requester" align="left" class="form-label">Requester</label>
-              <input class="form-control" type="text" placeholder="Requester" id="requester" v-model="requester">
+              <input class="form-control" type="email" placeholder="Requester" id="requester" v-model="requester">
             </div>
 
-            <div class="mb-3">
+            <div class="col-md-4">
               <label for="project" class="form-label">Project</label>
-              <input class="form-control" type="text" placeholder="Project" id="project" v-model="project">
+              <input type="text" class="form-control" id="project" placeholder="Project" v-model="project">
             </div>
-
-            <div class="mb-3">
+            <div class="col-md-4">
               <label for="cluster" class="form-label">Cluster</label>
-              <input class="form-control" type="text" placeholder="Cluster" id="cluster" v-model="cluster">
+              <input type="text" class="form-control" id="cluster" placeholder="Cluster" v-model="cluster">
             </div>
-
-            <div class="mb-3">
+            <div class="col-md-4">
               <label for="database" class="form-label">Database</label>
-              <input class="form-control" type="text" placeholder="Database" id="database" v-model="database">
+              <input type="text" class="form-control" id="database" placeholder="Database" v-model="database">
             </div>
-
-            <div class="mb-3">
+            <div class="col-md-4">
               <label for="requestType" class="form-label">Request Type</label>
-              <select type="list" placeholder="Request Type" id="requestType" v-model="requestType">
-                <option default value="USER_ACCESS">USER_ACCESS</option>
-                <option value="NETWORK_ACCESS">NETWORK_ACCESS</option>
-                <option value="NEW_CLUSTER">NEW_CLUSTER</option>
+              <select id="requestType" class="form-select" v-model="requestType" @change="displayInputFields">
+                <option selected value="USER-ACCESS">USER-ACCESS</option>
+                <option value="NETWORK-ACCESS">NETWORK-ACCESS</option>
+                <option value="NEW-INFRA">NEW-INFRA</option>
               </select>
             </div>
 
-            <input type="text" placeholder="Role" v-model="role">
+            <div class="form-row" v-for="(inputField, index) in inputFields" :key="index">
+              <div class="col-md-4">
+                <label>{{ inputField.label }}</label>
+                <input v-model="inputField.id" id="{inputFields[${index}][id]}" :name="`inputFields[${index}][label]`" type="text" class="form-control" :placeholder="`inputFields[${index}][label]`">
+              </div>
+            </div>
+
+<!--            <input type="text" placeholder="Role" hidden v-model="role">-->
             <input type="list" placeholder="Status" v-model="status">
             <input type="date" placeholder="Request Date" v-model="requestedDate">
-          </fieldset>
+
           <div>
             <button class="btn button-primary" type="submit" value="Send">Submit</button>
           </div>
@@ -53,6 +56,7 @@
 <script>
 // import { InMemoryCache } from "apollo-cache-inmemory";
 import gql from "graphql-tag";
+import { uuid } from 'vue-uuid' // Import uuid
 
 const ADD_REQUEST = gql`
   mutation addRequest($id: ID, $requester: String, $project: String, $cluster: String, $database: String, $requestType: String, $role: String, $status: String, $requestedDate: String) {
@@ -75,8 +79,11 @@ const ADD_REQUEST = gql`
 
 export default {
   name: "AddRequest",
+  apollo: {},
   data() {
     return {
+      inputFields: [
+      ],
       id: "",
       requester: "",
       project: "",
@@ -86,25 +93,50 @@ export default {
       role: "",
       status: "",
       requestedDate: "",
-    };
+    }
   },
-  apollo: {},
   methods: {
+    displayInputFields () {
+      if (this.requestType === 'USER-ACCESS') {
+        this.inputFields = [];
+        this.inputFields.push({
+          label: 'Role',
+          id: 'role'
+        })
+      } else if (this.requestType === 'NETWORK-ACCESS') {
+        this.inputFields = [];
+        this.inputFields.push({
+          label: 'CIDR/IP',
+          id: 'cidr'
+        })
+      }
+    },
+    currentDateTime() {
+      const current = new Date();
+      const date = current.getFullYear()+'-'+(current.getMonth()+1)+'-'+current.getDate();
+      const time = current.getHours() + ":" + current.getMinutes() + ":" + current.getSeconds();
+      const dateTime = date +' '+ time;
+
+      return dateTime;
+    },
     submit(e) {
       e.preventDefault();
-      const { id, requester, project, cluster, database, requestType, role, status, requestedDate } = this.$data;
+      const { requester, project, cluster, database, requestType } = this.$data;
+      if (this.requestType === 'USER-ACCESS') {
+        this.role = this.inputFields[0].id;
+      }
       this.$apollo.mutate({
         mutation: ADD_REQUEST,
         variables: {
-          id,
+          id: uuid.v1(),
           requester,
           project,
           cluster,
           database,
           requestType,
-          role,
-          status,
-          requestedDate
+          role: this.role,
+          status: 'OPEN',
+          requestedDate: this.currentDateTime()
         },
         refetchQueries: ["getRequests"]
       });
