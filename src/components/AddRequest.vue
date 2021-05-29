@@ -6,25 +6,24 @@
         <h5>Create new request</h5>
       </div>
       <div class="row g-3" >
-            <input class="form-control" type="text" align="left" aria-label="input example"  placeholder="ID" v-model="id">
-
             <div class="col-md-12">
               <label for="requester" align="left" class="form-label">Requester</label>
               <input class="form-control" type="email" placeholder="Requester" id="requester" v-model="requester">
             </div>
 
-            <div class="col-md-4">
-              <label for="project" class="form-label">Project</label>
-              <input type="text" class="form-control" id="project" placeholder="Project" v-model="project">
-            </div>
-            <div class="col-md-4">
-              <label for="cluster" class="form-label">Cluster</label>
-              <input type="text" class="form-control" id="cluster" placeholder="Cluster" v-model="cluster">
-            </div>
-            <div class="col-md-4">
-              <label for="database" class="form-label">Database</label>
-              <input type="text" class="form-control" id="database" placeholder="Database" v-model="database">
-            </div>
+<!--            <div class="col-md-4">-->
+<!--              <label for="project" class="form-label">Project</label>-->
+<!--              <input type="text" class="form-control" id="project" placeholder="Project" v-model="project">-->
+<!--            </div>-->
+<!--            <div class="col-md-4">-->
+<!--              <label for="cluster" class="form-label">Cluster</label>-->
+<!--              <input type="text" class="form-control" id="cluster" placeholder="Cluster" v-model="cluster">-->
+<!--            </div>-->
+<!--            <div class="col-md-4">-->
+<!--              <label for="database" class="form-label">Database</label>-->
+<!--              <input type="text" class="form-control" id="database" placeholder="Database" v-model="database">-->
+<!--            </div>-->
+
             <div class="col-md-4">
               <label for="requestType" class="form-label">Request Type</label>
               <select id="requestType" class="form-select" v-model="requestType" @change="displayInputFields">
@@ -42,11 +41,11 @@
             </div>
 
 <!--            <input type="text" placeholder="Role" hidden v-model="role">-->
-            <input type="list" placeholder="Status" v-model="status">
-            <input type="date" placeholder="Request Date" v-model="requestedDate">
+<!--            <input type="list" placeholder="Status" v-model="status">-->
+<!--            <input type="date" placeholder="Request Date" v-model="requestedDate">-->
 
-          <div>
-            <button class="btn button-primary" type="submit" value="Send">Submit</button>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">Submit</button>
           </div>
       </div>
     </div>
@@ -59,20 +58,27 @@ import gql from "graphql-tag";
 import { uuid } from 'vue-uuid' // Import uuid
 
 const ADD_REQUEST = gql`
-  mutation addRequest($id: ID, $requester: String, $project: String, $cluster: String, $database: String, $requestType: String, $role: String, $status: String, $requestedDate: String) {
-    createUserRequestArgs(id: $id, requester: $requester, project: $project,
-    cluster: $cluster, database: $database, requestType: $requestType, role: $role,
-    status: $status, requestedDate: $requestedDate
+  mutation addRequest($id: ID, $requester: String,
+#                        $project: String, $cluster: String, $database: String,
+                        $requestType: String,
+#                        $role: String,
+                      $status: String, $requestedDate: String, $requestDetails: String) {
+    createUserRequestArgs(id: $id, requester: $requester,
+#    project: $project, cluster: $cluster, database: $database,
+    requestType: $requestType,
+#    role: $role,
+    status: $status, requestedDate: $requestedDate, requestDetails: $requestDetails
     ) {
       id
       requester
-      project
-      cluster
-      database
+#      project
+#      cluster
+#      database
       requestType
-      role
+#      role
       status
       requestedDate
+      requestDetails
     }
     }
 `;
@@ -86,13 +92,14 @@ export default {
       ],
       id: "",
       requester: "",
-      project: "",
-      cluster: "",
-      database: "",
+      // project: "",
+      // cluster: "",
+      // database: "",
       requestType: "",
       role: "",
       status: "",
       requestedDate: "",
+      requestDetails: "",
     }
   },
   methods: {
@@ -109,6 +116,24 @@ export default {
           label: 'CIDR/IP',
           id: 'cidr'
         })
+      } else if (this.requestType === 'NEW-INFRA') {
+        this.inputFields = [];
+        this.inputFields.push({
+          label: 'Database Name',
+          id: 'databaseName'
+        },{
+          label: 'Cloud Provider',
+          id: 'cloudProvider'
+        },{
+          label: 'Region',
+          id: 'region'
+        },{
+          label: 'Number of Shards',
+          id: 'shards'
+        },{
+          label: 'Instance size',
+          id: 'instanceSize'
+        })
       }
     },
     currentDateTime() {
@@ -120,23 +145,38 @@ export default {
       return dateTime;
     },
     submit(e) {
+      let requestJSON = new Object();
       e.preventDefault();
-      const { requester, project, cluster, database, requestType } = this.$data;
+      const { requester,
+        // project, cluster, database,
+        requestType } = this.$data;
       if (this.requestType === 'USER-ACCESS') {
-        this.role = this.inputFields[0].id;
+        // this.role = this.inputFields[0].id;
+        requestJSON.role = this.inputFields[0].id;
+      } else if (this.requestType === 'NETWORK-ACCESS') {
+        // this.role = this.inputFields[0].id;
+        requestJSON.ipcidr = this.inputFields[0].id;
+      } else if (this.requestType === 'NEW-INFRA') {
+        requestJSON.databaseName = this.inputFields[0].id;
+        requestJSON.cloudProvider = this.inputFields[1].id;
+        requestJSON.region = this.inputFields[2].id;
+        requestJSON.shards = this.inputFields[3].id;
+        requestJSON.instanceSize = this.inputFields[4].id;
       }
+      alert(JSON.stringify(requestJSON));
       this.$apollo.mutate({
         mutation: ADD_REQUEST,
         variables: {
           id: uuid.v1(),
           requester,
-          project,
-          cluster,
-          database,
+          // project,
+          // cluster,
+          // database,
           requestType,
           role: this.role,
           status: 'OPEN',
-          requestedDate: this.currentDateTime()
+          requestedDate: this.currentDateTime(),
+          requestDetails: JSON.stringify(requestJSON),
         },
         refetchQueries: ["getRequests"]
       });
