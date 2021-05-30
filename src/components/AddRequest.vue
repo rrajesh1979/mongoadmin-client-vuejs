@@ -106,10 +106,24 @@ export default {
     displayInputFields () {
       if (this.requestType === 'USER-ACCESS') {
         this.inputFields = [];
-        this.inputFields.push({
-          label: 'Role',
-          id: 'role'
-        })
+        this.inputFields.push(
+            {
+              label: 'Project',
+              id: 'project'
+            },
+            {
+              label: 'Cluster',
+              id: 'cluster'
+            },
+            {
+              label: 'Database Name',
+              id: 'databaseName'
+            },
+            {
+              label: 'Role',
+              id: 'role'
+            }
+        )
       } else if (this.requestType === 'NETWORK-ACCESS') {
         this.inputFields = [];
         this.inputFields.push({
