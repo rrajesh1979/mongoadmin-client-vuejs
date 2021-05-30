@@ -11,6 +11,7 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VueBootstrapToasts from "vue-bootstrap-toasts";
 
 import UUID from 'vue-uuid'
 
@@ -20,6 +21,8 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.use(UUID);
+
+Vue.use(VueBootstrapToasts);
 
 Vue.config.productionTip = false
 

@@ -19,7 +19,9 @@
     "graphql-tag": "^2.12.4",
     "vue": "^2.6.11",
     "vue-apollo": "^3.0.7",
+    "vue-bootstrap-toasts": "^1.0.7",
     "vue-cli-plugin-apollo": "^0.22.2",
+    "vue-toastr": "^2.1.2",
     "vue-uuid": "^2.0.2"
   },
   "devDependencies": {
